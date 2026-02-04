@@ -4,29 +4,30 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checkout stage'
+                git branch: 'main',
+                    url: 'https://github.com/<your-username>/<your-repo>.git'
             }
         }
 
-        stage('Build') {
+        stage('Compile') {
             steps {
-                echo 'Build stage'
+                bat 'javac Hello.java'
             }
         }
 
-        stage('Test') {
+        stage('Archive') {
             steps {
-                echo 'Test stage'
+                archiveArtifacts artifacts: 'Hello.class', fingerprint: true
             }
         }
     }
 
     post {
-        success {
-            echo 'BUILD SUCCESSFUL'
-        }
         failure {
-            echo 'BUILD FAILED'
+            error 'Build failed due to error'
+        }
+        success {
+            echo 'CI Pipeline Successful'
         }
     }
 }
